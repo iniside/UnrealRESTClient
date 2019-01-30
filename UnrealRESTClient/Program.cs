@@ -119,11 +119,29 @@ namespace UnrealRESTClient
 
             Dictionary<string, Property> objects = new Dictionary<string, Property>();
 
+            //objects which do not contain oher objects as properties
+            List<string> SimpleObjects = new List<string>();
+            //objects which have other objects as properties.
+            List<string> ComplexObjects = new List<string>();
+
             foreach (var schema in schemas)
             {
                 //ParseSchema(schema.Value, ref objects, schema.Key);
-                ExtractObjects(schema.Value, ref objects, schema.Key);
+                //ExtractObjects(schema.Value, ref objects, schema.Key);
+                if (schema.Value.Reference != null)
+                {
+                    ComplexObjects.Add(schema.Key);
+                }
+                else
+                {
+                    SimpleObjects.Add(schema.Key);
+                }
             }
+
+            foreach(KeyValuePair<string, Property> obj in objects)
+            {
+            }
+
             foreach (var schema in schemas)
             {
                 foreach(var prop in schema.Value.Properties)
@@ -132,7 +150,7 @@ namespace UnrealRESTClient
                     {
                         if(objects.ContainsKey(schema.Key))
                         {
-                            if(schema.Key != prop.Key)
+                            //if(!objects.ContainsKey(prop.Key))
                             {
                                 objects[schema.Key].property.Add(prop.Key, prop.Value.Type);
                             }
@@ -141,23 +159,6 @@ namespace UnrealRESTClient
                     }
                 }
                 
-            }
-
-            //objects which do not contain oher objects as properties
-            List<string> SimpleObjects = new List<string>();
-            //objects which have other objects as properties.
-            List<string> ComplexObjects = new List<string>();
-
-            foreach (var obj in objects)
-            {
-                if(obj.Value.property.ContainsValue("object") || obj.Value.property.ContainsValue("array") || obj.Value.property.ContainsValue("map"))
-                {
-                    ComplexObjects.Add(obj.Key);
-                }
-                else
-                {
-                    SimpleObjects.Add(obj.Key);
-                }
             }
 
             if (objects.Count > 0)
