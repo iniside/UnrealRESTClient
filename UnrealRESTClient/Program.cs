@@ -132,12 +132,34 @@ namespace UnrealRESTClient
                     {
                         if(objects.ContainsKey(schema.Key))
                         {
-                            objects[schema.Key].property.Add(prop.Key, prop.Value.Type);
+                            if(schema.Key != prop.Key)
+                            {
+                                objects[schema.Key].property.Add(prop.Key, prop.Value.Type);
+                            }
+                            
                         }
                     }
                 }
                 
             }
+
+            //objects which do not contain oher objects as properties
+            List<string> SimpleObjects = new List<string>();
+            //objects which have other objects as properties.
+            List<string> ComplexObjects = new List<string>();
+
+            foreach (var obj in objects)
+            {
+                if(obj.Value.property.ContainsValue("object") || obj.Value.property.ContainsValue("array") || obj.Value.property.ContainsValue("map"))
+                {
+                    ComplexObjects.Add(obj.Key);
+                }
+                else
+                {
+                    SimpleObjects.Add(obj.Key);
+                }
+            }
+
             if (objects.Count > 0)
             {
 
