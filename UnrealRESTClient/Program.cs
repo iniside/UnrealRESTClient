@@ -124,6 +124,7 @@ namespace UnrealRESTClient
             //objects which have other objects as properties.
             List<string> ComplexObjects = new List<string>();
 
+            //cherck down to properties, to see if they are linking some other object
             foreach (var schema in schemas)
             {
                 //ParseSchema(schema.Value, ref objects, schema.Key);
